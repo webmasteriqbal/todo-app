@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +17,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = DB::table('todos')->get();
+        // $todos = DB::table('todos')->get();
+        $todos = Todo::all();
         return view('welcome', compact('todos'));
     }
 
@@ -33,10 +36,21 @@ class TodoController extends Controller
         ]);
 
 
-        DB::table('todos')->insert([
-            'name' => $request->name,
-            'dec' => $request->dec
-        ]);
+        Todo::create($request->all());
+
+
+        // Todo::create([
+        //     'name' => $request->name,
+        //     'dec' => $request->dec
+        // ]);
+
+
+
+        // DB::table('todos')->insert([
+        //     'name' => $request->name,
+        //     'dec' => $request->dec
+        // ]);
+
         return redirect()->route('todos');
     }
     /**
@@ -49,13 +63,17 @@ class TodoController extends Controller
      */
     public function edit($id)
     {
-        $todo = DB::table('todos')->where('id', $id)->first();
+        // $todo = DB::table('todos')->where('id', $id)->first();
 
+        $todo = Todo::find($id)->first();
 
         if (!$todo) {
             return view('error');
         }
-        $todos = DB::table('todos')->get();
+        // $todos = DB::table('todos')->get();
+
+
+        $todos = Todo::all();
         return view('welcome', compact('todos', 'todo'));
     }
     /**
@@ -72,10 +90,16 @@ class TodoController extends Controller
             'dec' => 'required'
         ]);
 
-        $todo = DB::table('todos')->where('id', $id)->update([
+
+        Todo::find($id)->update([
             'name' => $request->name,
             'dec' => $request->dec
         ]);
+
+        // $todo = DB::table('todos')->where('id', $id)->update([
+        //     'name' => $request->name,
+        //     'dec' => $request->dec
+        // ]);
         return redirect()->route('todos');
     }
 
@@ -87,7 +111,10 @@ class TodoController extends Controller
      */
     public function delete($id)
     {
-        DB::table('todos')->where('id', $id)->delete();
+
+        Todo::find($id)->delete();
+
+        // DB::table('todos')->where('id', $id)->delete();
 
         return redirect()->route('todos');
     }
